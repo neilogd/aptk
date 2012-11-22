@@ -48,6 +48,11 @@ typedef struct
 extern int aptk_biquad_filter_buffer_init(aptk_biquad_filter_buffer* buffer);
 
 /*
+ * aptk_biquad_filter_buffer_destroy
+ */
+extern int aptk_biquad_filter_buffer_destroy(aptk_biquad_filter_buffer* buffer);
+
+/*
  * aptk_biquad_process
  * @param coeff Coefficients.
  * @param buffer Buffer data for internal processing.

@@ -21,10 +21,18 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __APTK_H__
-#define __APTK_H__
+#ifndef __APTK_ACF_H__
+#define __APTK_ACF_H__
 
-#include <aptk/aptk_acf.h>
-#include <aptk/aptk_biquad_filter.h>
+/* 
+ * aptk_acf_process
+ */
+int aptk_acf_process(const float* invalues, float* outvalues, int numvalues);
+
+/*
+ * aptk_acf_largest_peak_period
+ */
+int aptk_acf_largest_peak_period(const float* invalues, int numvalues, int* outperiod);
+
 
 #endif

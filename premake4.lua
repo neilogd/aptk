@@ -1,4 +1,3 @@
-
 local action = _ACTION or ""
 
 -- Setup the main solution.
@@ -17,6 +16,8 @@ solution "aptk"
 		targetdir ( "build/" .. action .. "/bin/Production" )
 		flags { "StaticRuntime", "EnableSSE", "EnableSSE2", "FloatFast", "NativeWChar", "NoPCH", "NoRTTI", "NoExceptions", "NoFramePointer", "Optimize" }
 
+	dofile ("portaudio/premake4.lua")
+
 	project "aptk_lib"
 		kind "StaticLib"
 		language "C"
@@ -27,8 +28,9 @@ solution "aptk"
 		kind "ConsoleApp"
 		language "C"
 		files { "./inc/test/**.h", "./src/test/**.c" }
-		includedirs { "./inc" }
+		includedirs { "./inc", "./portaudio/include" }
 		configuration "windows"
 			links {
-				"aptk_lib"
+				"aptk_lib",
+				"portaudio_lib"
 			}

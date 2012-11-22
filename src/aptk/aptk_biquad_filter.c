@@ -32,7 +32,7 @@
 // APF: remember, it's useful mate: http://en.wikipedia.org/wiki/All-pass_filter
 
 /*
- * aptk_biquad_filter_init
+ * aptk_biquad_filter_buffer_init
  */
 int aptk_biquad_filter_buffer_init(aptk_biquad_filter_buffer* buffer)
 {
@@ -45,11 +45,20 @@ int aptk_biquad_filter_buffer_init(aptk_biquad_filter_buffer* buffer)
 }
 
 /*
+ * aptk_biquad_filter_buffer_destroy
+ */
+int aptk_biquad_filter_buffer_destroy(aptk_biquad_filter_buffer* buffer)
+{
+	// do nothing.
+	return 0;
+}
+
+/*
  * internal_aptk_biquad_filter_process_single
  */
 static float internal_aptk_biquad_filter_process_single(const aptk_biquad_filter_coeff* coeff, aptk_biquad_filter_buffer* buffer, float value)
 {
-	float newvalue;
+	register float newvalue;
 
 	newvalue = coeff->in[0] * value +
 	           coeff->in[1] * buffer->in[0] +
@@ -70,10 +79,26 @@ static float internal_aptk_biquad_filter_process_single(const aptk_biquad_filter
  */
 int aptk_biquad_filter_process(const aptk_biquad_filter_coeff* coeff, aptk_biquad_filter_buffer* buffer, const float* invalues, float* outvalues, int numvalues)
 {
+#if 0 // reference
 	while(numvalues--)
 	{
 		*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
 	}
+#else
+	register int n = (numvalues+7)/8;
+	switch(numvalues % 8)
+	{
+	case 0: do {	*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 7:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 6:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 5:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 4:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 3:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 2:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+	case 1:			*outvalues++ = internal_aptk_biquad_filter_process_single(coeff, buffer, *invalues++);
+			} while(--n > 0);
+	}
+#endif
 
 	return 0;
 }
